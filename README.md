@@ -3,5 +3,5 @@
 
 Перейти к боту <a href="https://t.me/tux_weather_bot">Weather by ᵀᵁX</a>
 
-<img src="[img_girl.jpg](https://github.com/tuxby/WeatherBot/raw/master/screenshots%2FWeatherBotScreenshot.jpg)" width="500" height="600">
+<img src="https://github.com/tuxby/WeatherBot/raw/master/screenshots%2FWeatherBotScreenshot.jpg" width="500">
 
