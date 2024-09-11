@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <title th:text="#{dashboard.title}"></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body class="content col-12 " style="height: 100%;" >
+<a th:href="@{/}" hidden="true" id="contextPath"> </a>
+
+<!--<main class="container col-10 col-sm-12" style="min-height:calc(100vh - 89px);">-->
+
+<div id="header">
+    <header th:insert="~{blocks/header :: header}"></header>
+</div>
+
+<div id="controls" class="container mb-1 align-content-center">
+        <div class="d-inline">
+            <div class="d-inline-block m-2 mb-0 mt-0 ">
+                <input type="checkbox" class="form-check-input" id="autoScrollCheckbox">
+                <label th:text="#{dashboard.autoscroll}" class="form-check-label" for="autoScrollCheckbox"></label>
+            </div>
+        </div>
+</div>
+
+
+<div class="col-11 mx-auto fs-6 overflow-auto">
+    <div id="log" class="lh-sm w-100 m-auto m-3 p-3 border border-light border-start-0 border-end-0 border-bottom-0 rounded-2 small overflow-auto"></div>
+</div>
+
+<div id="footer" th:insert="~{blocks/footer :: footer}"></div>
+<!--</main>-->
+</body>
+
+<script th:inline="javascript">
+    let lastEventTime = 0;
+
+    window.onload = function () {
+        let headerId = document.getElementById('header');
+        let controlsId = document.getElementById('controls');
+        let footerId = document.getElementById('footer');
+        size = window.innerHeight - headerId.offsetHeight - controlsId.offsetHeight - footerId.offsetHeight - 86 ;
+        document.getElementById('log').setAttribute("style","height:"+ size + "px");
+
+        let autoScrollCheckbox = document.getElementById('autoScrollCheckbox');
+        autoScrollCheckbox.checked = true;
+        autoScrollCheckbox.setAttribute("checked", "true");
+        setInterval( updateLog , 1000 );
+    }
+
+    window.onresize = function() {
+        setLogDivSize();
+    };
+
+    const setLogDivSize = function() {
+        let headerId = document.getElementById('header');
+        let controlsId = document.getElementById('controls');
+        let footerId = document.getElementById('footer');
+        size = window.innerHeight - headerId.offsetHeight - controlsId.offsetHeight - footerId.offsetHeight - 86 ;
+        document.getElementById('log').setAttribute("style","height:"+ size + "px");
+    };
+
+    const updateLog = async function () {
+
+        let response = await fetch( document.getElementById("contextPath").href + 'log?eventTime=' +lastEventTime);
+        let json_data = await response.text();
+        const jsonArray = JSON.parse(json_data);
+
+        jsonArray.forEach((i) => {
+            let eventTime = new Date(i.timestmp);
+
+            let level_info_style;
+            switch (i.level_string) {
+                case "INFO":
+                    level_info_style = 'text-body';
+                    break;
+                case "WARN":
+                    level_info_style = 'text-dark fw-bold';
+                    break;
+                case "ERROR":
+                    level_info_style = 'text-danger';
+                    break;
+                default:
+                    level_info_style = 'text-primary';
+            }
+
+            document.getElementById("log").innerHTML += (
+                '<div class="row row-cols-3 align-items-start  font-monospace">' +
+                '<div class="col-auto p-0 m-0 text-sm-start align-baseline text-success" >' +
+                eventTime.getFullYear()+'-'+
+                ('0' + (eventTime.getMonth()+1)).slice(-2) +'-'+
+                ('0' + eventTime.getDate()).slice(-2)+' ' +
+                ('0' + eventTime.getHours()).slice(-2)+':'+
+                ('0'+eventTime.getMinutes()).slice(-2) +':'+
+                ('0'+ eventTime.getSeconds()).slice(-2) + ':' +
+                ('00'+ eventTime.getMilliseconds()).slice(-3) + '</div> ' +
+                '<div class="col-auto d-inline align-baseline ' + level_info_style + '" >' + ('    ' + i.level_string).slice(-5) + '</div>' +
+                '<div class="col-auto d-inline align-baseline ' + level_info_style + '" >' +
+                i.formatted_message + '</div></div>' );
+
+            lastEventTime = eventTime.getTime();
+        });
+        if (document.getElementById('autoScrollCheckbox').checked && jsonArray.length!==0)
+        {
+            let divElement = document.getElementById('log');
+            divElement.scrollTop = divElement.scrollHeight;
+        }
+    }
+
+</script>
+
+</html>

@@ -1,0 +1,30 @@
+<configuration>
+
+    <!-- Консольный аппендер для отладки -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+<!--        "%black", "%red", "%green","%yellow","%blue", "%magenta","%cyan", "%white", "%gray", "%boldRed","%boldGreen", "%boldYellow", "%boldBlue", "%boldMagenta""%boldCyan", "%boldWhite" and "%highlight"-->
+        <encoder>
+            <pattern>%highlight([%date]) %highlight([%level]) %highlight([%thread]) %highlight([%logger{10} %file:%line]) %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Файловый аппендер  -->
+<!--    <appender name="FILE" class="ch.qos.logback.core.FileAppender">-->
+<!--        <file>ALKOREPORTS_LOG.LOG</file>-->
+<!--        <append>true</append>-->
+<!--        <immediateFlush>true</immediateFlush>-->
+<!--        <encoder>-->
+<!--            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>-->
+<!--        </encoder>-->
+<!--    </appender>-->
+
+    <!-- Кастомный аппендер для записи логов в базу данных -->
+    <appender name="DB" class="by.tux.weatherbot.utils.LogDBAppender">
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+<!--        <appender-ref ref="FILE" />-->
+        <appender-ref ref="DB" />
+    </root>
+</configuration>
