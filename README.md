@@ -3,4 +3,4 @@
 
 Перейти к боту <a href="https://t.me/tux_weather_bot">Weather by ᵀᵁX</a>
 
-![alt](Screenshot.jpg){: width="50%"}
+![Screenshot](Screenshot.jpg)
